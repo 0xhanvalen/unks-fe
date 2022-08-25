@@ -1,5 +1,6 @@
 import { useState, useContext, createContext } from "react";
 import { ethers } from "ethers";
+import { useEffectOnce } from "react-use";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
@@ -25,6 +26,12 @@ export const EthersContextFC = ({ children }) => {
     setSigner(tempSigner);
     setAddress(tempAddress);
   };
+
+  useEffectOnce(() => {
+    window?.ethereum?.on("accountsChanged", (accounts) => {
+        setAddress(accounts[0]);
+    })
+  })
 
   return (
     <EthersContext.Provider
