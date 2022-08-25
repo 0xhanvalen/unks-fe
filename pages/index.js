@@ -114,13 +114,13 @@ export default function Home() {
               textAlign: `center`,
             }}
           >
-            <p>Here's the deal:</p>
+            <p>Here&apos;s the deal:</p>
             <p>
-              If you're on the unklist (you know who you are), you can start
+              If you&apos;re on the unklist (you know who you are), you can start
               minting on August 28th at 10AM PST.
             </p>
             <p>
-              If you're not unklisted, you gotta wait for 24 hours after that.
+              If you&apos;re not unklisted, you gotta wait for 24 hours after that.
             </p>
             <p>The mint price is 0.03 ethereum each.</p>
             <p>You can only mint up to 4 per wallet.</p>
