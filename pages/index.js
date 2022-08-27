@@ -56,7 +56,7 @@ export default function Home() {
   }, [address, provider]);
 
   const publicMint = async () => {
-    const transaction = contract?.write?.publicMint(amountToMint, {
+    const transaction = await contract?.write?.publicMint(amountToMint, {
       value: ethers.utils.parseEther(`${amountToMint * 0.03}`),
     });
     setIsModalOpen(true);
