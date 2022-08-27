@@ -162,7 +162,7 @@ export default function Home() {
                 <p>
                   Your currently connected wallet is: <br /> {address}
                 </p>
-                {Date.now() >= 1661695200000 && (
+                {/* Date.now() >= 1661695200000 && */ (
                   <>
                     <input
                       type="number"
@@ -172,7 +172,6 @@ export default function Home() {
                     <button onClick={() => publicMint()}>Mint Unks</button>
                   </>
                 )}
-                {console.log(Date.now(), " 1661608800 ", "1661695200")}
                 {
                   /*Date.now() >= 1661608800000 && Date.now() < 1661695200000 &&  */ isAllowlist && (
                     <>
