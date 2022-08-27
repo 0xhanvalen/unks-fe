@@ -9,7 +9,7 @@ export const UNKSContract = (chainID, provider, signer) => {
     // }
     
     if (chainID == "0x64") {
-        contractAddress = "0x68c5c7e6dBD563EE3E55153302Dc9A202024f4Ce";
+        contractAddress = "0x28baAB260cC2963a4A0d084cDBE8Af6CC5cC960C";
     }
 
     if (typeof contractAddress == "undefined") {

@@ -4,6 +4,7 @@ import styles from "../styles/Home.module.css";
 import { useEthers } from "../contexts/EthersProviderContext";
 import { useState, useEffect } from "react";
 import { UNKSContract } from "../contract/contract";
+import { ethers } from "ethers";
 
 export default function Home() {
   const { isUpdating, provider, signer, address, connectProvider } =
@@ -12,6 +13,8 @@ export default function Home() {
   const [amountToMint, setAmountToMint] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [contract, setContract] = useState(null);
+  const [isAllowlist, setIsAllowlist] = useState(false);
+  const [allowlistProof, setAllowlistProof] = useState(null);
 
   const handleChange = (e) => {
     let val = e.target.value;
@@ -28,8 +31,28 @@ export default function Home() {
     }
   }
 
+  async function getMerkle() {
+    if (!!address) {
+      const stringedAddress = JSON.stringify({ address });
+      const req = {
+        method: "POST",
+        body: stringedAddress,
+      };
+      const res = await fetch("/api/merkle", req);
+      const jsonres = await res.json();
+      console.log({ jsonres });
+      setIsAllowlist(jsonres.boolean);
+      setAllowlistProof(jsonres?.hexProof);
+    }
+  }
+
+  useEffect(() => {
+    console.log({allowlistProof});
+  }, [allowlistProof]);
+
   useEffect(() => {
     getContract();
+    getMerkle();
   }, [address, provider]);
 
   const publicMint = async () => {
@@ -45,14 +68,15 @@ export default function Home() {
   };
 
   const allowListMint = async () => {
-    const transaction = contract?.write?.allowlistMint(amountToMint, {
+    const transaction = await contract?.write?.allowlistMint(amountToMint, allowlistProof, {
       value: ethers.utils.parseEther(`${amountToMint * 0.03}`),
     });
     setIsModalOpen(true);
-    const receipt = transaction.wait();
-    if (receipt?.status === 1) {
-      alert("Minted :3");
-    }
+    console.log({transaction});
+    // const receipt = transaction.wait();
+    // if (receipt?.status === 1) {
+    //   alert("Minted :3");
+    // }
     setIsModalOpen(false);
   };
 
@@ -116,11 +140,12 @@ export default function Home() {
           >
             <p>Here&apos;s the deal:</p>
             <p>
-              If you&apos;re on the unklist (you know who you are), you can start
-              minting on August 28th at 10AM PST.
+              If you&apos;re on the unklist (you know who you are), you can
+              start minting on August 28th at 10AM EST.
             </p>
             <p>
-              If you&apos;re not unklisted, you gotta wait for 24 hours after that.
+              If you&apos;re not unklisted, you gotta wait for 12 hours after
+              that.
             </p>
             <p>The mint price is 0.03 ethereum each.</p>
             <p>You can only mint up to 4 per wallet.</p>
@@ -148,16 +173,18 @@ export default function Home() {
                   </>
                 )}
                 {console.log(Date.now(), " 1661608800 ", "1661695200")}
-                {Date.now() >= 1661608800000 && Date.now() < 1661695200000 && (
-                  <>
-                    <input
-                      type="number"
-                      value={amountToMint}
-                      onChange={(e) => handleChange(e)}
-                    />
-                    <button onClick={() => allowListMint()}>Mint Unks</button>
-                  </>
-                )}
+                {
+                  /*Date.now() >= 1661608800000 && Date.now() < 1661695200000 &&  */ isAllowlist && (
+                    <>
+                      <input
+                        type="number"
+                        value={amountToMint}
+                        onChange={(e) => handleChange(e)}
+                      />
+                      <button onClick={() => allowListMint()}>Mint Unks</button>
+                    </>
+                  )
+                }
               </>
             )}
             {!address && (
