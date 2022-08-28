@@ -160,6 +160,7 @@ export default function Home() {
             </p>
             <p>The mint price is 0.03 ethereum each.</p>
             <p>You can only mint up to 4 per wallet.</p>
+            <p>This contract uses ERC721A, so you can mint 4 in one tx for the same gas as minting just 1.</p>
             {address && (
               <>
                 <div
