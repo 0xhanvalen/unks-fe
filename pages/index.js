@@ -185,7 +185,7 @@ export default function Home() {
                   </>
                 }
                 {
-                  Date.now() >= 1661738400000 && Date.now() < 1661695200000 && isAllowlist && (
+                  Date.now() >= 1661695200000 && Date.now() < 1661738400000 && isAllowlist && (
                     <>
                       <input
                         type="number"
