@@ -5,6 +5,7 @@ import { useEthers } from "../contexts/EthersProviderContext";
 import { useState, useEffect } from "react";
 import { UNKSContract } from "../contract/contract";
 import { ethers } from "ethers";
+import SyncLoader from "react-spinners/SyncLoader";
 
 export default function Home() {
   const { isUpdating, provider, signer, address, connectProvider } =
@@ -12,6 +13,7 @@ export default function Home() {
 
   const [amountToMint, setAmountToMint] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUnkMinted, setIsUnkMinted] = useState(false);
   const [contract, setContract] = useState(null);
   const [isAllowlist, setIsAllowlist] = useState(false);
   const [allowlistProof, setAllowlistProof] = useState(null);
@@ -47,7 +49,7 @@ export default function Home() {
   }
 
   useEffect(() => {
-    console.log({allowlistProof});
+    console.log({ allowlistProof });
   }, [allowlistProof]);
 
   useEffect(() => {
@@ -62,26 +64,35 @@ export default function Home() {
     setIsModalOpen(true);
     const receipt = transaction.wait();
     if (receipt?.status === 1) {
-      alert("Minted :3");
+      setIsUnkMinted(true);
     }
-    setIsModalOpen(false);
   };
 
   const allowListMint = async () => {
-    const transaction = await contract?.write?.allowlistMint(amountToMint, allowlistProof, {
-      value: ethers.utils.parseEther(`${amountToMint * 0.03}`),
-    });
+    const transaction = await contract?.write?.allowlistMint(
+      amountToMint,
+      allowlistProof,
+      {
+        value: ethers.utils.parseEther(`${amountToMint * 0.03}`),
+      }
+    );
     setIsModalOpen(true);
-    console.log({transaction});
-    // const receipt = transaction.wait();
-    // if (receipt?.status === 1) {
-    //   alert("Minted :3");
-    // }
-    setIsModalOpen(false);
+    console.log({ transaction });
+    const receipt = transaction.wait();
+    if (receipt?.status === 1) {
+      setIsUnkMinted(true);
+    }
   };
 
   return (
     <>
+      <Head>
+        <title>Unks Mint Site</title>
+        <meta
+          name="description"
+          content="The official site for minting UNKS."
+        />
+      </Head>
       <div
         style={{
           width: `100vw`,
@@ -162,8 +173,8 @@ export default function Home() {
                 <p>
                   Your currently connected wallet is: <br /> {address}
                 </p>
-                {/* Date.now() >= 1661695200000 && */ (
-                  <>
+                {
+                  /* Date.now() >= 1661695200000 && */ <>
                     <input
                       type="number"
                       value={amountToMint}
@@ -171,7 +182,7 @@ export default function Home() {
                     />
                     <button onClick={() => publicMint()}>Mint Unks</button>
                   </>
-                )}
+                }
                 {
                   /*Date.now() >= 1661608800000 && Date.now() < 1661695200000 &&  */ isAllowlist && (
                     <>
@@ -192,6 +203,83 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <LoadingModal setIsModalOpen={setIsModalOpen} isUnkMinted={isUnkMinted} />
     </>
   );
 }
+
+const LoadingModal = (props) => {
+  return (
+    <>
+      <div
+        style={{
+          backgroundColor: `rgba(0,0,0,0.2)`,
+          width: `100vw`,
+          height: `100vh`,
+          position: `fixed`,
+        }}
+        onClick={props.setIsModalOpen(false)}
+      ></div>
+      <div
+        style={{
+          backgroundColor: `white`,
+          width: `500px`,
+          height: `500px`,
+          padding: `2rem`,
+          display: `grid`,
+          placeItems: `center`,
+          position: `fixed`,
+          left: `50%`,
+          top: `50%`,
+          transform: `translateX(-50%) translateY(-50%)`,
+        }}
+      >
+        <div
+          style={{
+            display: `flex`,
+            flexDirection: `column`,
+            alignItems: `center`,
+          }}
+        >
+          <h3
+            style={{
+              color: `#255C99`,
+              fontFamily: `'Permanent Marker', cursive`,
+              display: `block`,
+              width: `fit-content`,
+              fontSize: `5vh`,
+              margin: `0 auto`,
+            }}
+          >
+            minting your unk...
+          </h3>
+          {!props?.isUnkMinted && (
+            <>
+              <br />
+              <SyncLoader color="#255C99" />
+            </>
+          )}
+          {props?.isUnkMinted && (
+            <>
+              <br />{" "}
+              <a
+                href="https://opensea.io/account"
+                style={{
+                  color: `#255C99`,
+                  fontFamily: `'Permanent Marker', cursive`,
+                  display: `block`,
+                  width: `fit-content`,
+                  fontSize: `5vh`,
+                  margin: `0 auto`,
+                  textDecoration: `underline`,
+                }}
+              >
+                View Your Unks!
+              </a>
+            </>
+          )}
+        </div>
+      </div>
+    </>
+  );
+};
