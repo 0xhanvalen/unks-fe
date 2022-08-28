@@ -175,7 +175,7 @@ export default function Home() {
                   Your currently connected wallet is: <br /> {address}
                 </p>
                 {
-                  Date.now() >= 1661738400000 && <>
+                  Date.now() >= 1661702019000 && <>
                     <input
                       type="number"
                       value={amountToMint}
@@ -184,6 +184,7 @@ export default function Home() {
                     <button onClick={() => publicMint()}>Mint Unks</button>
                   </>
                 }
+                {/* {console.log({isAllowlist})}
                 {
                   Date.now() >= 1661695200000 && Date.now() < 1661738400000 && isAllowlist && (
                     <>
@@ -195,7 +196,7 @@ export default function Home() {
                       <button onClick={() => allowListMint()}>Mint Unks</button>
                     </>
                   )
-                }
+                } */}
               </>
             )}
             {!address && (
