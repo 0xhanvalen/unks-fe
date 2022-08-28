@@ -203,7 +203,12 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <LoadingModal setIsModalOpen={setIsModalOpen} isUnkMinted={isUnkMinted} />
+      {isModalOpen && (
+        <LoadingModal
+          setIsModalOpen={setIsModalOpen}
+          isUnkMinted={isUnkMinted}
+        />
+      )}
     </>
   );
 }
